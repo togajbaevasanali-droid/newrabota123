@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Tools</title>
+<style>
+  body {
+    font-family: sans-serif;
+    background: #fff;
+    color: #000;
+    margin: 20px;
+  }
+  section {
+    margin-bottom: 20px;
+  }
+  input, textarea, select, button {
+    margin: 5px 0;
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  pre {
+    background: #f2f2f2;
+    padding: 5px;
+  }
+</style>
+</head>
+<body>
+
+<section>
+  <input id="a" type="number" placeholder="Число 1">
+  <select id="op">
+    <option>+</option><option>-</option><option>*</option><option>/</option>
+  </select>
+  <input id="b" type="number" placeholder="Число 2">
+  <button onclick="calc()">=</button>
+  <pre id="out1"></pre>
+</section>
+
+<section>
+  <input id="len" type="number" value="12" placeholder="Длина пароля">
+  <label><input id="spec" type="checkbox"> спецсимволы</label>
+  <button onclick="gen()">Пароль</button>
+  <pre id="out2"></pre>
+</section>
+
+<section>
+  <textarea id="txt" rows="4" placeholder="Текст"></textarea>
+  <button onclick="count()">Посчитать</button>
+  <pre id="out3"></pre>
+</section>
+
+<section>
+  <input id="url" placeholder="URL">
+  <button onclick="check()">Проверить</button>
+  <pre id="out4"></pre>
+</section>
+
+<script>
+function calc() {
+  let a = parseFloat(aEl.value), b = parseFloat(bEl.value), o = opEl.value, r;
+  if (isNaN(a) || isNaN(b)) return out1.textContent = "Ошибка";
+  if (o==="+") r=a+b;
+  else if (o==="-") r=a-b;
+  else if (o==="*") r=a*b;
+  else if (o==="/") r=b!==0?a/b:"∞";
+  out1.textContent = r;
+}
+function gen() {
+  let l = parseInt(len.value)||12, s = spec.checked;
+  let c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  if (s) c += "!@#$%^&*()_+=-";
+  let p = "";
+  for (let i=0;i<l;i++) p += c[Math.floor(Math.random()*c.length)];
+  out2.textContent = p;
+}
+function count() {
+  let t = txt.value;
+  let lines = t.split('\n').length;
+  let words = t.split(/\s+/).filter(Boolean).length;
+  let chars = t.length;
+  out3.textContent = `строк: ${lines} слов: ${words} символов: ${chars}`;
+}
+async function check() {
+  let u = url.value.trim();
+  if (!u) return;
+  try {
+    let r = await fetch(u,{method:"HEAD"});
+    out4.textContent = r.status+" "+r.statusText;
+  } catch(e) {
+    out4.textContent = "ошибка";
+  }
+}
+const aEl=document.getElementById('a'),
+      bEl=document.getElementById('b'),
+      opEl=document.getElementById('op'),
+      out1=document.getElementById('out1'),
+      len=document.getElementById('len'),
+      spec=document.getElementById('spec'),
+      out2=document.getElementById('out2'),
+      txt=document.getElementById('txt'),
+      out3=document.getElementById('out3'),
+      url=document.getElementById('url'),
+      out4=document.getElementById('out4');
+</script>
+
+</body>
+</html>
